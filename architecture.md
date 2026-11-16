@@ -1,0 +1,33 @@
+# How the pieces fit
+
+```mermaid
+flowchart TB
+    A["A Mac app"] --> O["open — starts the app"]
+    O --> K["AppKit — buttons, text, windows"]
+    K --> S["SkyLight — how apps ask the screen for a window"]
+    S --> W["WindowServer — draws everything"]
+    D["d — background services"] --- K
+    X["darwinator + dyld — let FreeBSD run Mac programs"] --- O
+    W --> F["FreeBSD"]
+    X --> F
+```
+
+| repository | one line |
+|---|---|
+| `darwinator` | the kernel module that runs Mach-O programs |
+| `dyld` | the loader side: `machrun`, the cache tools |
+| `macdeps` | takes what Apple owns from *your* Mac (scripts and lists only) |
+| `IOKit` | the hardware registry and input stubs the Mac programs ask for |
+| `d` | launchd, notifyd, wsbridge, LaunchServices, other daemons |
+| `WindowServer` | wsd: compositor, input, IPC |
+| `SkyLight` | the window protocol (wire, handlers, client shim) |
+| `QuartzCore` | CoreAnimation |
+| `CoreUI` | the reader of `.car` asset files |
+| `AppKit` | our AppKit |
+| `open` | `open App.app` and the stand-in libraries |
+| `SDK` | compatibility frameworks |
+| `LaunchServices` | icons, file types, pictures |
+| `apps` | Dock, Finder, menu bar, login window, Terminal, TextEdit |
+| `iso` | builds the installer image |
+| `tests` | runs real Mac apps and checks the result |
+| `research` | notes, dumps, experiments |
