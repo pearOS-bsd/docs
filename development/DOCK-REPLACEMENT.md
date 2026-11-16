@@ -25,7 +25,7 @@ Decision of the user (2026-11-16). Two requirements:
 **Replace:** the same plist mechanism with our binary.
 
 ## Blockers that need the user
-- **Root on the Mac VM** (the `alex` password, or a `NOPASSWD` sudoers line): for `dtrace`/`fs_usage` (a complete trace including paths the interposer misses) and for the boot-arg below.
+- **Root on the Mac VM**: `sudo` works with the password `pear` (verified). Used for `dtrace`/`fs_usage` (a complete trace including paths the interposer misses) and for the boot-arg below.
 - **AMFI:** our binary will carry the same private entitlements to be served by SkyLight, SystemUIServer and others; AMFI kills an ad-hoc signed binary with restricted entitlements. Likely needed on the Mac VM: `nvram boot-args="keepsyms=1 amfi_get_out_of_my_way=1"` and a reboot (root). Until then ours runs with the public API only and the private requests are refused: that is already a visible difference.
 
 ## Order
