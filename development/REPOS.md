@@ -5,8 +5,13 @@ The rule: one repository = one thing that has its own build and its own tests; t
 ## Where everything lives now (done 2026-11-16)
 | repository | what |
 |---|---|
-| `darwinator` | the kernel module that runs Mach-O programs (+ its dyld, tests) |
-| `d` | the daemons: `darwin/` (Mach-O: launchd, notifyd, wsbridge, lsd-stub, lsd-objc, svc-stub, carender-stub, hid-stub, wm-stub), `bsd/` (launchd + agents, usernoted, airportd, Open and Save Panel Service), `session/` (the scripts that start them) |
+| `darwinator` | the kernel module that runs Mach-O programs (+ its tests) |
+| `dyld` | machrun, the cache and framework tools, notes on the real dyld |
+| `macdeps` | takes what Apple owns from the user's own Mac (scripts and lists only) |
+| `IOKit` | user-space IOKit: hid-stub, registry data (the kernel half is in darwinator) |
+| `tests` | cross-repository tests: real Mac apps on pearOS, smoke tests, test programs |
+| `docs` | the documentation (users and developers, this file) |
+| `d` | the daemons: `darwin/` (Mach-O: launchd, notifyd, wsbridge, lsd-stub, lsd-objc, svc-stub, carender-stub, wm-stub), `bsd/` (launchd + agents, usernoted, airportd, Open and Save Panel Service), `session/` (the scripts that start them) |
 | `WindowServer` | wsd: compositor, backends, input, IPC, the client library, the test tools, tests, CI |
 | `SkyLight` | the SkyLight protocol: wire headers, server handlers, client shim, generators, specs |
 | `AppKit` | AppKit written back from the decompile + the backend (`Open*.m`) on wsd |
