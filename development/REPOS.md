@@ -17,6 +17,7 @@ The rule: one repository = one thing that has its own build and its own tests; t
 | `AppKit` | AppKit written back from the decompile + the backend (`Open*.m`) on wsd |
 | `open` | the launcher (`open Notes.app`), `open-patch.py`, stubs, `deploy.sh`, `build-appkit.sh` |
 | `QuartzCore` | CoreAnimation compat and the reference tests |
+| `Solarium` | Liquid Glass (macOS 26): map of the Apple classes, the real parameters and defaults (REA), the Metal glass shaders and their translation to SPIR-V; implementation to come |
 | `CoreUI` | the `.car` reader + `assets/` (Aqua, DarkAqua, DesktopServicesPriv); the big catalogues come from a Mac |
 | `SDK` | compat frameworks and headers (`libwsbsdcompat`, CoreWLAN/CoreWiFi, UserNotifications, XPC ...), `foundation/`, `defaults/` |
 | `LaunchServices` | icons (`LSIcon`, icns), UTI table, desktop pictures |
