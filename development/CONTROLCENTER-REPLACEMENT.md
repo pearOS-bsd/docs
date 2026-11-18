@@ -26,6 +26,9 @@ In the real process these are called by AppKit (NSStatusItem / NSStatusBarWindow
 ## Done 2026-11-18
 Three status windows (Spotlight, Control Center, clock) at level 25 with drawn content, registered with the status-bar call; `CCSkyLightStartup.m` (table of the real startup queries), `CCPrefs.m` (47 keys), `CCServices.m` (59+13).
 
+## Panel (2026-11-18)
+`CCPanel.m`: window 800,0 656x964 at level 22 (the real one), panel x 966..1274, y 34..533 (r 37), tiles measured on the real panel (Wi-Fi/Bluetooth/AirDrop 140x63, Now Playing 140x140, round buttons 63, Display/Sound 292x63, Edit Controls pill), colours panel 61 / tile 111 / icon disc 147 / white button, labels and sliders drawn with Core Graphics + Core Text (glyphs are vector approximations, not SF Symbols). Opens on a click of the Control Center item, closes on a click outside (`CCInput.m`: CGEvent tap scaffolding; TCC rows for com.apple.controlcenter are set by `research/cc-trace/deploy-ours.sh`). Pixel comparison of the panel area against a screenshot of the real one (Wi-Fi and Bluetooth off, nothing playing): mean difference 4.5 / 255 (first draw 21.5: a colour-space conversion made the greys lighter; fixed by using the bitmap's own RGB space). Not done: the real material (blur/vibrancy: the real tiles are translucent over the wallpaper), shadow, states and actions (all tiles are static), the top "System recently" pill, SF Symbols glyphs, animations.
+
 ## Next
 1. REA: prototypes of the remaining `SLSTransactionSystemStatusBar*`, `SLSCopySystemStatusBarMetrics`, `SLSSystemStatusBarGetWindowPreferredPosition`, `SLSPackagesSetWindowConstraints` (record in `apps/controlcenter-cocoa/SkyLightAPI`).
 2. Three status windows (reuse `../dock-cocoa/DockWindow`), then the panel window; pixel diff against the real one (`research/dock-trace/pixdiff.py`).
