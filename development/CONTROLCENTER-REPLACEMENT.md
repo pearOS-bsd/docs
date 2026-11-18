@@ -15,16 +15,19 @@ Goal (user, 2026-11-18): our own ControlCenter that can replace the real one on 
 |---|---|---|
 | LOOKUP | 13 | 13 same, same order |
 | XPCSVC | 59 | 59 same, same order (5 of them are our own listeners) |
-| PREF | 47 | 0 (to do: read the same keys through the same frameworks) |
-| SLS | 226 | 0 (to do) |
-| OBJC (CAContext) | 16 | 0 |
+| PREF | 47 | 47 same |
+| SLS | 226 | ~120 (status-bar windows + the startup queries; the rest is called inside SkyLight/AppKit or needs prototypes) |
+| OBJC (CAContext) | 16 | 13 (addFence:, setPayload:, dealloc missing) |
 
 ## SkyLight: the status-bar path (dtrace args, `sbargs*.d`, results `sbargs*-real.txt`)
-Each status item = `SLSNewWindowWithOpaqueShape[AndContext](cid, type 5, region, opaque, options 0x10000, tags, ...)` then `SLSSetWindowClientPerceivedType(cid, wid, 5, ...)`, `SLSCreateLayerContext` + `SLSSetWindowLayerContext`, `SLSSetWindowEventMask`, `SLSSetWindowTitle`/`SLSSetWindowProperty`, `SLSAddTrackingRegion`, then in ONE transaction: `SLSTransactionSetWindowTags` (x2), `SLSTransactionSetWindowShadowProperties`, `SLSTransactionSetWindowLevel(tx, wid, 0x19=25)`, **`SLSTransactionSystemStatusBarRegisterSortedWindow(tx, wid, sortKey, identifier, 0x590|0x490, 0|2)`** (sort keys 0x7ffffff5 and 0x7fffffe1: positions counted from the right edge), `SLSTransactionSystemStatusBarSetItemPrivacyIndicator`; afterwards `SLSSystemStatusBarGetWindowPreferredPosition(cid, wid, &out)`, `SLSCopySystemStatusBarMetrics`, `SLSPackagesSetWindowConstraints`. The 4th argument of RegisterSortedWindow is an object (the dump shows a string/UUID-like value): exact prototypes still to be taken from the call sites with REA (thin x86_64 slice of the ControlCenter binary + SkyLight from the cache).
+Each status item = `SLSNewWindowWithOpaqueShape[AndContext](cid, type 5, region, opaque, options 0x10000, tags, ...)` then `SLSSetWindowClientPerceivedType(cid, wid, 5, ...)`, `SLSCreateLayerContext` + `SLSSetWindowLayerContext`, `SLSSetWindowEventMask`, `SLSSetWindowTitle`/`SLSSetWindowProperty`, `SLSAddTrackingRegion`, then in ONE transaction: `SLSTransactionSetWindowTags` (x2), `SLSTransactionSetWindowShadowProperties`, `SLSTransactionSetWindowLevel(tx, wid, 0x19=25)`, **`SLSTransactionSystemStatusBarRegisterSortedWindow(tx, wid, sortKey, identifier, 0x590|0x490, 0|2)`** (sort keys 0x7ffffff5 and 0x7fffffe1: positions counted from the right edge), `SLSTransactionSystemStatusBarSetItemPrivacyIndicator`; afterwards `SLSSystemStatusBarGetWindowPreferredPosition(cid, wid, &out)`, `SLSCopySystemStatusBarMetrics`, `SLSPackagesSetWindowConstraints`. The 4th argument of RegisterSortedWindow is an object (the dump shows a string/UUID-like value): **REA (SkyLight pseudo-code, 2026-11-18): the prototype is `(tx, wid, int key, CFString ident, uint a, int b, float f, uint last)`** (opcode 0x3a in the transaction stream; the real ControlCenter does NOT call it itself: REA found no reference in the binary, AppKit's NSStatusBar does, `systemStatusBar` is imported); the other prototypes still to be taken with REA (thin x86_64 slice of the ControlCenter binary + SkyLight from the cache).
 In the real process these are called by AppKit (NSStatusItem / NSStatusBarWindow); ours calls SkyLight directly (the Dock's method) so that it runs on pearOS's SkyLight too.
 
+## Done 2026-11-18
+Three status windows (Spotlight, Control Center, clock) at level 25 with drawn content, registered with the status-bar call; `CCSkyLightStartup.m` (table of the real startup queries), `CCPrefs.m` (47 keys), `CCServices.m` (59+13).
+
 ## Next
-1. REA: prototypes of the `SLSTransactionSystemStatusBar*`, `SLSCopySystemStatusBarMetrics`, `SLSSystemStatusBarGetWindowPreferredPosition`, `SLSPackagesSetWindowConstraints` (record in `apps/controlcenter-cocoa/SkyLightAPI`).
+1. REA: prototypes of the remaining `SLSTransactionSystemStatusBar*`, `SLSCopySystemStatusBarMetrics`, `SLSSystemStatusBarGetWindowPreferredPosition`, `SLSPackagesSetWindowConstraints` (record in `apps/controlcenter-cocoa/SkyLightAPI`).
 2. Three status windows (reuse `../dock-cocoa/DockWindow`), then the panel window; pixel diff against the real one (`research/dock-trace/pixdiff.py`).
 3. PREF keys and the remaining SLS/CAContext calls until `compare.py` says same.
 4. Behaviour: Wi-Fi/Bluetooth/AirDrop/Focus/Display/Sound through the same private frameworks on macOS, and through pearOS services on pearOS.
