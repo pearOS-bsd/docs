@@ -20,3 +20,10 @@ SwiftUI's presets for comparison: `.smooth` = response 0.5 critically damped, `.
 
 ## What ours does (`apps/controlcenter-cocoa`)
 `CCSwiftUISpring(keyPath, response, damping)` builds a `CASpringAnimation` with stiffness (2 pi / response)^2, damping 2 zeta sqrt(stiffness), mass 1. The panel opens with scale (from 94 % about its top-right corner: a guess) and opacity on the spring (0.4867, 1.0) (the most used). NOT identified: which call site belongs to which effect (the sites are anonymous static values: the owners are found through the globals they are stored in, or the Swift metadata of the views in `ControlCenter.framework` / `ControlCenterUIKit`). The fade-out (0.12 s), the cross-fade of pages and edit mode (0.15 s) and the state changes are approximations. Next: map the globals to their uses (REA xrefs to the stored globals, e.g. 0x1008449d0 for the first site), and read the durations of the three timing-curve sites.
+
+## Who uses which spring (partial, 2026-11-18)
+Reading the functions that use the Animation values (script: scan the binary for the global that each tiny initialiser stores into, find the functions that read it, list the log strings next to them):
+- spring (0.4867, 1.0) at 0x10017d5c5 -> the **Live Activities** module of the menu bar: `LiveActivitiesController` "collapse %s" (`FUN_1001705e0`, `withAnimation(completionCriteria: .logicallyComplete)`) and "Expand %s at %s for %s" (`FUN_1001752a0`).
+- spring (0.6283, 0.7333) at 0x1003ca984 -> the **banner** (SystemBanner): `didMoveMouse / hovering / visible`, "Dismissing banner via button", "Actually fading out ...".
+- (0.33, 0.825) at 0x1003ca7e4 and 0x10052d9d7 -> views whose function holds only SwiftUI environment access strings (not identified).
+So the ControlCenter **app** binary holds the menu-bar side (Live Activities, banners); the panel and its tiles are in `ControlCenter.framework` (and `ChronoUIServices` for the controls), inside the dyld cache. Extracted with `dsc_extractor` on the Mac VM for the same reading (the previous guess that the panel opens with (0.4867, 1.0) is therefore NOT supported by the code: it is the Live Activities collapse).
