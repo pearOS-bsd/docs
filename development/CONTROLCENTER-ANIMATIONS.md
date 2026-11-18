@@ -21,9 +21,19 @@ SwiftUI's presets for comparison: `.smooth` = response 0.5 critically damped, `.
 ## What ours does (`apps/controlcenter-cocoa`)
 `CCSwiftUISpring(keyPath, response, damping)` builds a `CASpringAnimation` with stiffness (2 pi / response)^2, damping 2 zeta sqrt(stiffness), mass 1. The panel opens with scale (from 94 % about its top-right corner: a guess) and opacity on the spring (0.4867, 1.0) (the most used). NOT identified: which call site belongs to which effect (the sites are anonymous static values: the owners are found through the globals they are stored in, or the Swift metadata of the views in `ControlCenter.framework` / `ControlCenterUIKit`). The fade-out (0.12 s), the cross-fade of pages and edit mode (0.15 s) and the state changes are approximations. Next: map the globals to their uses (REA xrefs to the stored globals, e.g. 0x1008449d0 for the first site), and read the durations of the three timing-curve sites.
 
-## Who uses which spring (partial, 2026-11-18)
-Reading the functions that use the Animation values (script: scan the binary for the global that each tiny initialiser stores into, find the functions that read it, list the log strings next to them):
-- spring (0.4867, 1.0) at 0x10017d5c5 -> the **Live Activities** module of the menu bar: `LiveActivitiesController` "collapse %s" (`FUN_1001705e0`, `withAnimation(completionCriteria: .logicallyComplete)`) and "Expand %s at %s for %s" (`FUN_1001752a0`).
-- spring (0.6283, 0.7333) at 0x1003ca984 -> the **banner** (SystemBanner): `didMoveMouse / hovering / visible`, "Dismissing banner via button", "Actually fading out ...".
-- (0.33, 0.825) at 0x1003ca7e4 and 0x10052d9d7 -> views whose function holds only SwiftUI environment access strings (not identified).
-So the ControlCenter **app** binary holds the menu-bar side (Live Activities, banners); the panel and its tiles are in `ControlCenter.framework` (and `ChronoUIServices` for the controls), inside the dyld cache. Extracted with `dsc_extractor` on the Mac VM for the same reading (the previous guess that the panel opens with (0.4867, 1.0) is therefore NOT supported by the code: it is the Live Activities collapse).
+## Who uses which animation (read from the functions around each call site, 2026-11-18)
+The app binary DOES hold the panel's SwiftUI (BentoBox, sliders, modules); `ControlCenter.framework` is only 300 KB. Method: the function that contains each call site and the strings it references (os_log formats, accessibility ids, SF Symbol names):
+| animation | where (function: strings) | meaning |
+|---|---|---|
+| spring (0.5, 0.85) = `.snappy` | 0x100446c18 "Display %u changed hasBrightnessControl"; 0x10049d73e "AXKeyboardBrightnessSlider"; 0x1004c2fb5 "arrow.uturn.backward", "controlcenter-airplay"; 0x10058f4ac "AXBackgroundSoundVolumeSlider", "music.quarternote.3"; 0x100230da2 | a control's value changes (sliders, AirPlay, background sound) |
+| spring (0.33, 1.0) | 0x10026ddc9 "expand %s" / "collapse %s" | expanding / collapsing a module |
+| spring (0.4867, 1.0) | 0x1001705e0 "collapse %s", 0x1001752a0 "Expand %s at %s for %s" (Live Activities); 0x100373e97 "[SystemBannerController] Actually faded out" | live activities and banners |
+| spring (0.6283, 0.7333) | 0x1003738c9 "Dismissing banner via button", "didMoveMouse ... hovering ... visible" | banner dismissal |
+| spring (0.5, 1.0) = `.smooth` | 0x1003bd764, 0x1002fb57f, 0x10018bc11, 0x1001dc446 (environment-reading views) | view transitions (not individually identified) |
+| spring (0.15, 0.85) | 0x1001dc32d | interactive (drag, press) |
+| spring (0.5, 0.3) | 0x10048fc4b | a bouncy one-off (not identified) |
+| interpolatingSpring (mass 2, stiffness 300, damping 50) | 0x1004ff4f3 "modalAnchoredFromDisplayable(" | **a page / modal anchored to its source control: the Wi-Fi, Bluetooth, Sound ... pages** (critically damped: zeta = 50 / (2 sqrt(300 * 2)) = 1.02, omega 12.2 rad/s, settles in about 0.4 s) |
+| interpolatingSpring (mass 1, stiffness / damping computed at run time) | 0x100212f8c "Choose Content to Share", "controlcenter.show.toggles", "notificationcenterui.menu" | showing the panel (`show.toggles`) and menus: parameters not readable statically |
+| easeInOut(duration) | 0x1002d0a18 symbols "waveform.and.mic", "person.fill.viewfinder" (recording-indicator style views) | duration not read |
+| easeOut(duration), linear(duration) | 0x1002d114d, 0x100093c31 | not identified |
+Used in ours: the page opens with the real `interpolatingSpring(2, 300, 50)` (scale from 96 % about the panel's corner: the 96 % is a guess); the panel opens on the smooth spring (0.5, 1.0) (a guess among the candidates: the real `show.toggles` spring has run-time parameters); state changes cross-fade 0.15 s (the real: `.snappy` on the value: not possible for a bitmap tile). The earlier note that the panel opens with (0.4867, 1.0) was wrong: that value belongs to Live Activities and banners.
