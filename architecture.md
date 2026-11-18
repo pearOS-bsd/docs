@@ -19,7 +19,7 @@ flowchart TB
 | `macdeps` | takes what Apple owns from *your* Mac (scripts and lists only) |
 | `IOKit` | the hardware registry and input stubs the Mac programs ask for |
 | `d` | launchd, notifyd, wsbridge, LaunchServices, other daemons |
-| `WindowServer` | wsd: compositor, input, IPC |
+| `WindowServer` | WindowServer: compositor, input, IPC |
 | `SkyLight` | the window protocol (wire, handlers, client shim) |
 | `QuartzCore` | CoreAnimation |
 | `CoreUI` | the reader of `.car` asset files |

@@ -1,4 +1,4 @@
-# macOS window look on wsd
+# macOS window look on WindowServer
 
 Measured on a real macOS 27 (Darwin 27) machine with AppKit's own `NSWindow` (probe program, not decompiled code). Dark appearance.
 
@@ -10,7 +10,7 @@ Measured on a real macOS 27 (Darwin 27) machine with AppKit's own `NSWindow` (pr
   minimise (251,180,1) (253,193,1) (254,207,48); zoom (51,194,1) (0,188,0) (78,194,58); inactive grey (76) (71) (67) with a lighter rim.
 - Implemented in `appkit/back-wsd/WsdMacTheme.m` (a GSTheme + decoration view; `WSD_NO_MACTHEME=1` turns it off, `WSD_APPEARANCE=light` selects a typical light palette which was NOT measured).
 
-## WindowServer (server side, drawn by wsd)
+## WindowServer (server side, drawn by WindowServer)
 - Rounded corners radius 16.
 - Shadow = gaussian of the window shape shifted down, fitted to captures: key window sigma 19, density 0.72, offset 19; non-key window sigma 19, density 0.41, offset 18.
 - 1 px inner rim, white at 10 %.
@@ -33,7 +33,7 @@ Measured on a real macOS 27 (Darwin 27) machine with AppKit's own `NSWindow` (pr
 - Window colour: macOS tints the dark window colour with the wallpaper ((27,36,43) on the measured machine, (30,30,30) neutral); the light window colour is white (255).
 
 ## How the parity is checked
-`uitest/` renders every control above in a fixed layout; `uitest/tools/compare.py` crops each control from the macOS and the wsd screenshot and prints the mean absolute difference per control plus a side-by-side sheet (left macOS, middle wsd, right difference). The floor is ~8 (font rendering: Inter instead of San Francisco, no ClearType-like smoothing match). `ksa/` does the same for a whole application (the Keyboard Setup Assistant panes).
+`uitest/` renders every control above in a fixed layout; `uitest/tools/compare.py` crops each control from the macOS and the WindowServer screenshot and prints the mean absolute difference per control plus a side-by-side sheet (left macOS, middle WindowServer, right difference). The floor is ~8 (font rendering: Inter instead of San Francisco, no ClearType-like smoothing match). `ksa/` does the same for a whole application (the Keyboard Setup Assistant panes).
 
 ## NSAlert
 `-[NSAlert runModal]` is replaced in `WsdMacTheme.m` (WSD_NO_MACALERT=1 keeps GNUstep's): borderless panel, radius 26, 64 pt icon, bold title, 13 pt text, 30 pt capsule buttons (first = default, rightmost), 260 pt wide. Verified against `refs/mac/alert.png` (CI artifact `uitest-alert.png`). Open: the stock app icon (black/white square) differs from Apple's generic icon.

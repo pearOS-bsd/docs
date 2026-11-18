@@ -14,7 +14,7 @@ uninstall.service, dmd.policy, backlightd, widget-observation, iohideventsystem,
 ## Mach services the Dock PROVIDES (other programs look these up)
 com.apple.dock.server (CoreDock API: tile size, magnification, orientation, hide, bounce, ...), dock.spaces, dock.fullscreen, dock.notificationcenter, dock.appstore, dock.spotlight,
 dock.sidecar, dock.ppt, dock.remotedesktoppicture, com.apple.dock (the Dock's own).  Entitlements: com.apple.private.dock.{ppt,spaces,spotlight}.
-Our Dock (GNUstep, wsd only) provides none of them.
+Our Dock (GNUstep, WindowServer only) provides none of them.
 
 ## Strings that look like names (all com.apple.* in the binary; notifications / ids / services)
 - com.apple.addressbook

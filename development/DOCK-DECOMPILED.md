@@ -16,4 +16,4 @@ Big classes: `DockBar` (322 methods; layout/magnification/floor), `DOCKTileLayer
 ## To read next (one per tick)
 1. `DockBar::setTileInset:` callers: the value of tileInset per tile size.  2. barWidth / destinationBarWidth / barLeft / barRight: bar geometry, shelf height, margins.
 3. Magnification curve (`DockBar::updateWithContext:...` 0x100108ab2 is 2349 lines of pseudo code: filter it with python for the constants).  4. DOCKLabelLayer (font, padding, radius, offset above the tile).
-5. DockGlassMaterialLayoutConfiguration / LayerController: the glass of the shelf and of the chicklets (what wsd's glass modes must reproduce).  6. Trash tile (empty / full art), separator, recents.
+5. DockGlassMaterialLayoutConfiguration / LayerController: the glass of the shelf and of the chicklets (what WindowServer's glass modes must reproduce).  6. Trash tile (empty / full art), separator, recents.

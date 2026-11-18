@@ -12,9 +12,9 @@ The rule: one repository = one thing that has its own build and its own tests; t
 | `tests` | cross-repository tests: real Mac apps on pearOS, smoke tests, test programs |
 | `docs` | the documentation (users and developers, this file) |
 | `d` | the daemons: `darwin/` (Mach-O: launchd, notifyd, wsbridge, lsd-stub, lsd-objc, svc-stub, carender-stub, wm-stub), `bsd/` (launchd + agents, usernoted, airportd, Open and Save Panel Service), `session/` (the scripts that start them) |
-| `WindowServer` | wsd: compositor, backends, input, IPC, the client library, the test tools, tests, CI |
+| `WindowServer` | WindowServer: compositor, backends, input, IPC, the client library, the test tools, tests, CI |
 | `SkyLight` | the SkyLight protocol: wire headers, server handlers, client shim, generators, specs |
-| `AppKit` | AppKit written back from the decompile + the backend (`Open*.m`) on wsd |
+| `AppKit` | AppKit written back from the decompile + the backend (`Open*.m`) on WindowServer |
 | `open` | the launcher (`open Notes.app`), `open-patch.py`, stubs, `deploy.sh`, `build-appkit.sh` |
 | `QuartzCore` | CoreAnimation compat and the reference tests |
 | `Solarium` | Liquid Glass (macOS 26): map of the Apple classes, the real parameters and defaults (REA), the Metal glass shaders and their translation to SPIR-V; implementation to come |
@@ -37,9 +37,9 @@ How the build finds them: `iso/build.sh` uses `D_DIR`, `SKYLIGHT_DIR`, `WINDOWSE
 |---|---|---|
 | `darwinator` | the FreeBSD kernel module that runs Mach-O programs, its dyld (machrun), tests | stays |
 | `d` | the daemons: `darwin/` (launchd, notifyd, wsbridge, lsd-stub, lsd-objc, svc-stub, carender-stub, hid-stub, wm-stub), `bsd/` (launchd + agents, usernoted, airportd, Open and Save Panel Service), `session/` (scripts that start them) | **done** (from darwinator and wsbsd) |
-| `WindowServer` | wsd: compositor (software/GL), backends (KMS, fb, headless), input (evdev, touchpad, xkb), IPC, cursor, shadows, blur, the client library (libwsclient: `client.c`, `ws_client.h`), test tools (wsshot, wsclick, wskey, wswins ...) | wsbsd `src/` (without `sls_*`), `include/ws*.h`, `test/`, `tools/ws*.c`, `Makefile`, `man/`, `demo/` |
-| `SkyLight` | our SkyLight: the SLS/CGS protocol (wire format, message ids, golden replies), the server side handlers `sls_*.c` that wsd links, the client shim (`SkyLight.h`, `skylight.c`), the generators (gen_golden, gen_blobs ...) and the specs/decompile notes | wsbsd `src/sls_*`, `include/SkyLight.h sls_*.h`, `shim/`, `docs/SPEC-SLS-WIRE.md skylight-*.txt EVENT-TAPS.md`, `tools/gen_*.py` |
-| `AppKit` | AppKit of the Mac decompiled (`decompiled/src`: the classes) + the backend that puts it on wsd (`Open*.m`: windows, events, text, nib loader, documents, menus, panels, colours, theme) + its tests | wsbsd `appkit/` |
+| `WindowServer` | WindowServer: compositor (software/GL), backends (KMS, fb, headless), input (evdev, touchpad, xkb), IPC, cursor, shadows, blur, the client library (libwsclient: `client.c`, `ws_client.h`), test tools (wsshot, wsclick, wskey, wswins ...) | wsbsd `src/` (without `sls_*`), `include/ws*.h`, `test/`, `tools/ws*.c`, `Makefile`, `man/`, `demo/` |
+| `SkyLight` | our SkyLight: the SLS/CGS protocol (wire format, message ids, golden replies), the server side handlers `sls_*.c` that WindowServer links, the client shim (`SkyLight.h`, `skylight.c`), the generators (gen_golden, gen_blobs ...) and the specs/decompile notes | wsbsd `src/sls_*`, `include/SkyLight.h sls_*.h`, `shim/`, `docs/SPEC-SLS-WIRE.md skylight-*.txt EVENT-TAPS.md`, `tools/gen_*.py` |
+| `AppKit` | AppKit of the Mac decompiled (`decompiled/src`: the classes) + the backend that puts it on WindowServer (`Open*.m`: windows, events, text, nib loader, documents, menus, panels, colours, theme) + its tests | wsbsd `appkit/` |
 | `open` | the launcher of Mac applications on pearOS: `open Notes.app`, `open-patch.py` (rewrites load commands), stub generator (`gen-stubs.py`, `stubs-regenerate.sh`), `deploy.sh`, `build-appkit.sh` (builds /open/AppKit from the AppKit repo) | wsbsd `open/` |
 | `iso` | the image build (FreeBSD base + overlay, esp, manifest, rc scripts, CI workflow) | wsbsd `iso/`, `ci/`, `.github/workflows/iso.yml` |
 | `ploader`, `clevo_wmi`, `virtio` | boot loader, Clevo RGB driver, virtio graphics | stay |

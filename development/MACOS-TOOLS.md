@@ -34,7 +34,7 @@ Order of work (dependencies): defaults (done) -> cfprefsd + plutil -> notifyd ->
 | `csrutil` | LATER | `status` prints the state of SIP as the image defines it (the user asked to be told about SIP); enable/disable only edit a flag |
 | `screencapture / screencaptureui` | NEXT | `wsshot` already grabs the screen: -x, -R x,y,w,h, -w (window), -c (to pasteboard), -t png/jpg/pdf, -i, -T delay; the UI part (Shift-Cmd-5) is an AppKit app |
 | `say` | LATER | a wrapper over espeak-ng / flite (-v voice, -o file, -f file, -r rate); voices of the Mac are not available |
-| `caffeinate` | NEXT | -d -i -m -s -u -t -w: holds an assertion (wsd screen saver / display sleep, acpi); pmset reads them |
+| `caffeinate` | NEXT | -d -i -m -s -u -t -w: holds an assertion (WindowServer screen saver / display sleep, acpi); pmset reads them |
 | `pmset` | MAP | -g (battery: hw.acpi.battery.*, AC), -g assertions, displaysleep / sleep / disksleep settings kept in a plist, sleepnow = acpiconf -s 3, pmset -g batt |
 | `sips` | NEXT | -g (get properties), -s format, -z height width, -Z, -r (rotate), -c, --out: images through ImageIO of the compat layer (Opal) with libpng / libjpeg / libtiff |
 | `textutil` | LATER | -convert txt/html/rtf/rtfd/docx/odt/doc/webarchive, -cat, -info, -extract: over NSAttributedString (GNUstep has RTF and plain; HTML / docx need parsers) |
@@ -54,7 +54,7 @@ Order of work (dependencies): defaults (done) -> cfprefsd + plutil -> notifyd ->
 | `softwareupdate` | LATER | -l / -i / --history: a stub that says the system is up to date until the image has an update channel |
 | `nvram / bless / booter` | MAP | nvram -p / name=value over efivar (UEFI variables) and a file for the rest; bless --info / --setBoot / --mount over efibootmgr and the ESP of the image (`iso/`) |
 | `kextstat / kmutil / kextload / kextunload / kextfind / kextcache / kextutil` | MAP | kldstat / kldload / kldunload under Darwin names (kextstat prints the loaded modules; kmutil showloaded); there are no .kext bundles |
-| `hidutil` | MAP | `hidutil property --set` (key remapping: Caps Lock to Control) over the evdev layer of wsd (`src/input.c` keymap); list over usbconfig / devinfo |
+| `hidutil` | MAP | `hidutil property --set` (key remapping: Caps Lock to Control) over the evdev layer of WindowServer (`src/input.c` keymap); list over usbconfig / devinfo |
 | `vm_stat / hostinfo / memory_pressure / purge / pagesize / arch / machine` | MAP | vm_stat from vm.stats.*, hostinfo from sysctl, memory_pressure from vm.stats and the pager, purge = sync + drop caches, pagesize exists; `arch` and `machine` print arm64 / x86_64 and the Darwin-style names (FreeBSD's `machine` prints amd64 / arm64: wrapper) |
 | `getconf / route / pkill / pgrep / ipcs / ipcrm / banner / cal / sntp / strings / size / strip / top / fstyp / ktrace / kdump / audit / praudit / auditreduce / auditd / pwd_mkdb / ippfind / cupsfilter / lpstat / cupsenable / cupsdisable / cupsaccept / cupsreject` | BSD | present in FreeBSD base or its cups package (checked on the dev VM): behaviour is BSD's; Darwin-specific flags and keys (getconf DARWIN_USER_DIR, `top` with Mach task columns, `cal` Darwin options, pgrep/pkill on Mach ports) go into wrappers when something needs them |
 
