@@ -37,3 +37,9 @@ The app binary DOES hold the panel's SwiftUI (BentoBox, sliders, modules); `Cont
 | easeInOut(duration) | 0x1002d0a18 symbols "waveform.and.mic", "person.fill.viewfinder" (recording-indicator style views) | duration not read |
 | easeOut(duration), linear(duration) | 0x1002d114d, 0x100093c31 | not identified |
 Used in ours: the page opens with the real `interpolatingSpring(2, 300, 50)` (scale from 96 % about the panel's corner: the 96 % is a guess); the panel opens on the smooth spring (0.5, 1.0) (a guess among the candidates: the real `show.toggles` spring has run-time parameters); state changes cross-fade 0.15 s (the real: `.snappy` on the value: not possible for a bitmap tile). The earlier note that the panel opens with (0.4867, 1.0) was wrong: that value belongs to Live Activities and banners.
+
+## Run-time values of the real ControlCenter (2026-11-18, lldb breakpoints on the SwiftUI Animation constructors: `research/cc-trace/animbp.py`)
+Attached to the running real ControlCenter (xmm0..xmm3 at entry), clicked the Control Center icon, a tile's page arrow, and outside to close:
+- `interpolatingSpring(mass 1.0, stiffness 631.6547, damping 51.6603, initialVelocity 0)` once, when the panel opened: stiffness = (2 pi / 0.25)^2, so response 0.25 s, damping fraction 1.03 (critically damped): **the panel's show spring**. Ours uses it now (scale and opacity).
+- `spring(0.25, 0.75)` 80 times and `spring(0.2, 1.0)` 50 times (the pointer: hover and press feedback of the tiles while the panel was open), `spring(0.5, 0.85)` 19, `spring(0.5, 1.0)` 18, `spring(0.33, 0.825)` once. No `easeInOut`, `easeOut` or `linear` call during that session (their sites serve other views).
+The static `interpolatingSpring(2, 300, 50)` ("modalAnchoredFromDisplayable") did not fire in this session (the page click probably missed): the page animation of ours still follows the static reading.
