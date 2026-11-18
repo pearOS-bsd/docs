@@ -51,3 +51,6 @@ On pearOS the server is wsd: **SkyLight/server/sls_session.c now keeps the theme
 2. Three status windows (reuse `../dock-cocoa/DockWindow`), then the panel window; pixel diff against the real one (`research/dock-trace/pixdiff.py`).
 3. PREF keys and the remaining SLS/CAContext calls until `compare.py` says same.
 4. Behaviour: Wi-Fi/Bluetooth/AirDrop/Focus/Display/Sound through the same private frameworks on macOS, and through pearOS services on pearOS.
+
+## Correction (2026-11-18): the Spotlight magnifier is not ControlCenter's
+The real ControlCenter registers **two** status windows (dtrace of `SLSTransactionSystemStatusBarRegisterSortedWindow`: the clock and the Control Center icon); the magnifier at 1063,0 is Spotlight's own menu-bar item (the window list showed it for a while, and the real ControlCenter alone does not create it). Our ControlCenter no longer draws it (`CCStatusBar.m`); the extras now line up to the left of the Control Center icon.
