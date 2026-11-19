@@ -31,3 +31,6 @@ flowchart TB
 | `iso` | builds the installer image |
 | `tests` | runs real Mac apps and checks the result |
 | `research` | notes, dumps, experiments |
+
+## Compatible, not similar (the rule behind every piece)
+pearOS is an open-source implementation of macOS, not a lookalike.  When a framework or a daemon has a counterpart on the Mac, ours speaks **the same wire protocol** (MIG subsystems, XPC messages, shared-memory layouts), the same API and ABI, the same file formats and the same preference files, found by decompiling the real one and observing a real Mac, and never a protocol of our own that "does the same".  The check is two-way: a real Apple client works against our daemon, and our client works against the real daemon on a Mac.  Examples that exist: the WindowServer speaks SkyLight's real messages; the Control Center reads and writes the real layout file (`com.apple.controlcenter.bentoboxes`) and takes its list of controls from chronod's real database; the event taps are delivered as the real `CGYEventTap` messages.

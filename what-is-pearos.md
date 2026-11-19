@@ -1,6 +1,6 @@
 # What is pearOS BSD?
 
-pearOS BSD is a desktop that looks and feels like a Mac and runs on **FreeBSD**, a free, fast and stable operating system.
+pearOS BSD is an **open-source implementation of macOS** on **FreeBSD**, a free, fast and stable operating system.  It is not a desktop that merely looks like a Mac: every part speaks the same protocols, uses the same file formats and behaves the way the real one does, so that real Mac programs and real Apple frameworks work with it and the other way round (what we write can replace the Apple part it stands for).
 
 You get:
 - a Mac-style desktop: menu bar, Dock, Finder, windows, Control Center;
