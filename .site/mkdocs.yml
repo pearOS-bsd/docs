@@ -1,0 +1,79 @@
+# Base configuration of https://pearos-bsd.github.io/docs/ (MkDocs + Material).
+# Do not add a `nav:` here: .site/build.py generates it from the Markdown files, so a new .md appears by itself.
+site_name: pearOS BSD Docs
+site_url: https://pearos-bsd.github.io/docs/
+site_description: Documentation of pearOS BSD, a Mac-style desktop on FreeBSD that runs real Mac apps.
+repo_url: https://github.com/pearOS-bsd/docs
+repo_name: pearOS-bsd/docs
+edit_uri: edit/main/
+copyright: Copyright &copy; pearOS contributors · Documentation licensed under BSD-2-Clause
+
+theme:
+  name: material
+  custom_dir: overrides
+  language: en
+  font: false            # system font stack (see assets/site.css), like GitHub Docs and Microsoft Learn
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle: { icon: material/weather-night, name: Dark theme }
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle: { icon: material/weather-sunny, name: Light theme }
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.sections
+    - navigation.indexes
+    - navigation.path
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.action.edit
+    - content.action.view
+    - content.tooltips
+
+extra_css:
+  - assets/site.css
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/pearOS-bsd
+      name: pearOS-bsd on GitHub
+
+plugins:
+  - search
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Link to this section
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true

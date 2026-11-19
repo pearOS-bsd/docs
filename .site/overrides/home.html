@@ -1,0 +1,52 @@
+{#- Landing page. Cards and "recently updated" come from config.extra.home, written by .site/build.py from the files. -#}
+{% extends "main.html" %}
+{% set home = config.extra.home %}
+{% block tabs %}
+  {{ super() }}
+  <section class="pear-hero">
+    <div class="pear-hero__inner md-grid">
+      <p class="pear-eyebrow">Documentation</p>
+      <h1 class="pear-hero__title">pearOS BSD</h1>
+      <p class="pear-hero__lead">A Mac-style desktop on FreeBSD that runs real Mac apps. Learn what it is, run your first Mac app, see how the pieces fit, and build the image yourself.</p>
+      <div class="pear-hero__actions">
+        <a class="pear-btn pear-btn--primary" href="{{ home.cards[0].url | url if home.cards else '#' }}">Get started</a>
+        <label class="pear-btn pear-search" for="__search" role="button" tabindex="0">
+          {% include ".icons/material/magnify.svg" %}<span>Search the docs</span><kbd>/</kbd>
+        </label>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+{% block content %}
+  <section class="pear-section">
+    <h2 class="pear-h2">Start here</h2>
+    <div class="pear-cards">
+      {% for c in home.cards %}
+        <a class="pear-card" href="{{ c.url | url }}">
+          <span class="pear-card__title">{{ c.title }}</span>
+          <span class="pear-card__text">{{ c.text }}</span>
+          <span class="pear-card__more">Read more {% include ".icons/material/arrow-right.svg" %}</span>
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+  <div class="pear-split">
+    <section class="pear-section">
+      <h2 class="pear-h2">Recently updated</h2>
+      <ul class="pear-list">
+        {% for r in home.recent %}
+          <li><a href="{{ r.url | url }}"><span class="pear-list__title">{{ r.title }}</span><span class="pear-list__meta">{{ r.section }} · {{ r.date }}</span></a></li>
+        {% endfor %}
+      </ul>
+    </section>
+    <section class="pear-section">
+      <h2 class="pear-h2">Resources</h2>
+      <ul class="pear-list">
+        <li><a href="{{ 'development/REPOS/' | url }}"><span class="pear-list__title">All repositories</span><span class="pear-list__meta">What lives where</span></a></li>
+        <li><a href="https://github.com/pearOS-bsd"><span class="pear-list__title">pearOS-bsd on GitHub</span><span class="pear-list__meta">Source code of every component</span></a></li>
+        <li><a href="https://pearos-bsd.github.io/codemap/"><span class="pear-list__title">Code map</span><span class="pear-list__meta">Live 3D graph of the codebase</span></a></li>
+      </ul>
+      <p class="pear-note">{{ home.count }} documents · last updated {{ home.updated }}</p>
+    </section>
+  </div>
+{% endblock %}
