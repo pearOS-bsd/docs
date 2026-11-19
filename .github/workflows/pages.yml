@@ -1,5 +1,5 @@
 name: docs site
-# Builds https://pearos-bsd.github.io/docs/ from the Markdown files of this repository (they stay where they are;
+# Builds https://docs.pearos.xyz/ from the Markdown files of this repository (they stay where they are;
 # .site/build.py copies them, generates the navigation and folder overviews, and runs MkDocs Material).
 # Every push to main rebuilds it, so a new or changed .md is on the site a minute later.
 on:

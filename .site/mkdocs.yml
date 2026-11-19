@@ -1,7 +1,7 @@
-# Base configuration of https://pearos-bsd.github.io/docs/ (MkDocs + Material).
+# Base configuration of https://docs.pearos.xyz/ (MkDocs + Material).
 # Do not add a `nav:` here: .site/build.py generates it from the Markdown files, so a new .md appears by itself.
 site_name: pearOS BSD Docs
-site_url: https://pearos-bsd.github.io/docs/
+site_url: https://docs.pearos.xyz/
 site_description: Documentation of pearOS BSD, a Mac-style desktop on FreeBSD that runs real Mac apps.
 repo_url: https://github.com/pearOS-bsd/docs
 repo_name: pearOS-bsd/docs

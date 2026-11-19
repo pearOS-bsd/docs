@@ -1,6 +1,6 @@
 # Docs site
 
-https://pearos-bsd.github.io/docs/ is built from the Markdown files of this repository by `.github/workflows/pages.yml`
+https://docs.pearos.xyz/ is built from the Markdown files of this repository by `.github/workflows/pages.yml`
 on every push to `main`. Write documents as usual, anywhere in the repository: they are not moved or edited.
 
 - `build.py` copies the `.md` files to `_build/docs`, adds "Last updated" from git, generates the navigation (a new file

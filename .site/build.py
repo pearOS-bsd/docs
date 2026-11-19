@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build https://pearos-bsd.github.io/docs/ from the Markdown files of this repository, where they are.
+"""Build https://docs.pearos.xyz/ from the Markdown files of this repository, where they are.
 
     python3 .site/build.py            # -> _build/site (what GitHub Pages serves)
     python3 .site/build.py --serve    # live preview on http://127.0.0.1:8000/docs/
