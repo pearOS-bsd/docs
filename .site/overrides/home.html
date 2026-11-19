@@ -1,6 +1,7 @@
 {#- Landing page. Cards and "recently updated" come from config.extra.home, written by .site/build.py from the files. -#}
 {% extends "main.html" %}
 {% set home = config.extra.home %}
+{% block htmltitle %}<title>{{ config.site_name }}</title>{% endblock %}
 {% block tabs %}
   {{ super() }}
   <section class="pear-hero">
