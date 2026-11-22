@@ -10,9 +10,9 @@ Goal: macOS Swift / SwiftUI apps run on pearOS unchanged. pearOS runs the **real
 
 ## Where it stops (2026-11-22)
 What works on the lab VM (verified): AppKit windows with their content (title bar, content colour, menus: `SwiftUI/docs/appkit-hello-window.png`); a SwiftUI app (`tests/hello`) shows its window and menus; IOSurface (create, lock, look-up from another process: `darwinator/src/iosurface.c`, repo `IOSurface`); layer images in shared memory (memory-entry ports mapped by `carender-stub`); the geometry of layers as CoreAnimation has it; the window-visible notifications (906, 904, 912, 1201, 827) so that `NSWindow.occlusionState` is visible; the display timing page (`GetRealtimeDisplayDataShmemPort` 30504: refresh interval 16673320 ns) so that `NSScreen.minimumRefreshInterval` is 0.016673; precise `mk_timer` (48-byte expiry message, high resolution timers).
-What does not: the SwiftUI `Text` (the content layer of `Hello` stays empty) because the **update cycle of AppKit does not get its display link ticks reliably** (Mac: 176 in 3 s, pearOS: a few in bursts); the glyph masks are black, no traffic lights, one unsupported layer type; Metal executes nothing yet.
+SwiftUI itself runs (`SwiftUI/tests/hosting`: an NSHostingView with a Text builds the same layers as on the Mac, with a 60 Hz display link).  What does not: the SwiftUI `Text` is not on screen because its layer contents are a **`CA::Render::ImageQueue`** (type 0x19, shared-memory ring + ports) that WindowServer does not read yet; the glyph masks are black, no traffic lights, one unsupported layer type; Metal executes nothing yet.
 Metal: the shader translator exists (`pearOS-bsd/metal2vulkan`, the GPL-2.0-or-later fork, open source, a separate helper process: skill rule 17): Apple's `RenderBox` `default.metallib` compiles to verified SPIR-V; the runtime (Vulkan device, queues, IOSurface textures) is not connected.
-Details and evidence of every step: `SwiftUI/docs/EVIDENCE.md` (passes 1-51).
+Details and evidence of every step: `SwiftUI/docs/EVIDENCE.md` (passes 1-54).
 
 ## Needed in the lab VM (both easy to forget)
 - the `darwinator.ko` of the repository, not the image's (`ulock_wait` must return the number of other waiters, else lost wakeups hang the app): `SwiftUI/tools/provision-vm.sh` step 0;
