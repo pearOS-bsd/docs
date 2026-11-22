@@ -8,12 +8,16 @@ Goal: macOS Swift / SwiftUI apps run on pearOS unchanged. pearOS runs the **real
 3. **Metal** (`Metal`): RenderBox renders into IOSurface-backed textures. Device, queue, buffers and textures exist; command buffers, encoders, shaders, the Vulkan helper do not.
 4. **Services around the app**: cfprefsd, LaunchServices (`lsd-stub`), appleevents, HID, uiintelligencesupport, fonts ... stand-ins in `d/darwin` and `IOKit`.
 
-## Where it stops (2026-11-21)
-The app starts, the run loop works, windows are created but stay 1x1 and unordered; WindowServer never gets `TransactionCommitAsync` (30429). On the Mac it is preceded by 40209 (sent by `CA::Context::commit_transaction`) and by 40004 / 40005 (sent by `CA::Render::Fence::Transaction::Observer::activate`, a libdispatch mach source that fires when the server sends a message on the client's fence port). What the server sends on that port is the open question (decompiling QuartzCore).
+## Where it stops (2026-11-22)
+What works on the lab VM (verified): AppKit windows with their content (title bar, content colour, menus: `SwiftUI/docs/appkit-hello-window.png`); a SwiftUI app (`tests/hello`) shows its window and menus; IOSurface (create, lock, look-up from another process: `darwinator/src/iosurface.c`, repo `IOSurface`); layer images in shared memory (memory-entry ports mapped by `carender-stub`); the geometry of layers as CoreAnimation has it; the window-visible notifications (906, 904, 912, 1201, 827) so that `NSWindow.occlusionState` is visible; the display timing page (`GetRealtimeDisplayDataShmemPort` 30504: refresh interval 16673320 ns) so that `NSScreen.minimumRefreshInterval` is 0.016673; precise `mk_timer` (48-byte expiry message, high resolution timers).
+What does not: the SwiftUI `Text` (the content layer of `Hello` stays empty) because the **update cycle of AppKit does not get its display link ticks reliably** (Mac: 176 in 3 s, pearOS: a few in bursts); the glyph masks are black, no traffic lights, one unsupported layer type; Metal executes nothing yet.
+Metal: the shader translator exists (`pearOS-bsd/metal2vulkan`, the GPL-2.0-or-later fork, open source, a separate helper process: skill rule 17): Apple's `RenderBox` `default.metallib` compiles to verified SPIR-V; the runtime (Vulkan device, queues, IOSurface textures) is not connected.
+Details and evidence of every step: `SwiftUI/docs/EVIDENCE.md` (passes 1-51).
 
 ## Needed in the lab VM (both easy to forget)
 - the `darwinator.ko` of the repository, not the image's (`ulock_wait` must return the number of other waiters, else lost wakeups hang the app): `SwiftUI/tools/provision-vm.sh` step 0;
 - 10 GB of RAM: every Mach-O process costs about 300 MB.
 
 ## Tools
+`darwinator/tools/bp.c` (breakpoints in a Mach-O process on the lab VM through ptrace: registers at each hit; addresses = cache address + 0x1940c000), `lldb` on the Mac VM (`launchctl asuser 501`, `breakpoint set -a`, slide 0xeef9000), `msgtrace` (wraps SkyLight notification procedures, dumps the display state and the realtime display data page, IOKit calls), REA/Ghidra for QuartzCore / SkyLight / AppKit (`~/.pear/extracted`), `darwinator` debug levels (3: mk_timer, 4: kdebug_trace), `ipsw a2s` / `--symbols` for addresses.
 `SwiftUI/tools/msgtrace.c` (interposer for a Mac: every Mach message, service names, render server messages, backtraces), `abortprobe`, `pearos-stack.sh`, `provision-vm.sh`; `CARENDER_TRACE=1` (exported before launchd) makes `carender-stub` print every message.
