@@ -21,3 +21,7 @@ Details and evidence of every step: `SwiftUI/docs/EVIDENCE.md` (passes 1-54).
 ## Tools
 `darwinator/tools/bp.c` (breakpoints in a Mach-O process on the lab VM through ptrace: registers at each hit; addresses = cache address + 0x1940c000), `lldb` on the Mac VM (`launchctl asuser 501`, `breakpoint set -a`, slide 0xeef9000), `msgtrace` (wraps SkyLight notification procedures, dumps the display state and the realtime display data page, IOKit calls), REA/Ghidra for QuartzCore / SkyLight / AppKit (`~/.pear/extracted`), `darwinator` debug levels (3: mk_timer, 4: kdebug_trace), `ipsw a2s` / `--symbols` for addresses.
 `SwiftUI/tools/msgtrace.c` (interposer for a Mac: every Mach message, service names, render server messages, backtraces), `abortprobe`, `pearos-stack.sh`, `provision-vm.sh`; `CARENDER_TRACE=1` (exported before launchd) makes `carender-stub` print every message.
+
+
+## Status 2026-11-22: SwiftUI draws
+A hosting view with Text, Circle and Rectangle shows on pearOS (shapes and text). The system colours of SwiftUI (`Color.red`, `.primary`, ...) come from CoreUI's `DesignLibrary-macOS.bundle`; without it every one of them is clear and SwiftUI drops the layers. Take the bundle from the Mac (iso manifest and macdeps list it). Open: text mask position and tint, window chrome, dark appearance, Metal.
