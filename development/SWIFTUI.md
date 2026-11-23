@@ -25,3 +25,6 @@ Details and evidence of every step: `SwiftUI/docs/EVIDENCE.md` (passes 1-54).
 
 ## Status 2026-11-22: SwiftUI draws
 A hosting view with Text, Circle and Rectangle shows on pearOS (shapes and text). The system colours of SwiftUI (`Color.red`, `.primary`, ...) come from CoreUI's `DesignLibrary-macOS.bundle`; without it every one of them is clear and SwiftUI drops the layers. Take the bundle from the Mac (iso manifest and macdeps list it). Open: text mask position and tint, window chrome, dark appearance, Metal.
+
+## Status 2026-11-23: interactive
+`SwiftUI/tests/hello` (WindowGroup, Text, Button, Toggle, shapes) runs on pearOS, in the dark scheme, and reacts to a click: pointer events reach AppKit through the datagram stream (`GetPortStreamOutofline`, 30117) and the new text is drawn.  Open: control chrome (Button bezel, Toggle), window chrome, appearance from the system, keyboard/scroll, Metal.
