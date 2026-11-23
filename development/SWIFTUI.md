@@ -28,3 +28,14 @@ A hosting view with Text, Circle and Rectangle shows on pearOS (shapes and text)
 
 ## Status 2026-11-23: interactive
 `SwiftUI/tests/hello` (WindowGroup, Text, Button, Toggle, shapes) runs on pearOS, in the dark scheme, and reacts to a click: pointer events reach AppKit through the datagram stream (`GetPortStreamOutofline`, 30117) and the new text is drawn.  Open: control chrome (Button bezel, Toggle), window chrome, appearance from the system, keyboard/scroll, Metal.
+
+
+## Status 2026-11-23 (end of the long session): what works, what does not, how to test
+**Works on pearOS (real Apple SwiftUI/AppKit from the dyld cache):** a `@main App` with `WindowGroup`: Text (glyph masks with the colour of the scheme), `Button` (bezel), `Toggle` (box), shapes with colours and corner radius, window frame pieces (9-slice, rounded corners), traffic lights (active/inactive), dark scheme through `.preferredColorScheme`, a click on a Button changes `@State` and the new text is drawn, key events reach AppKit.
+**Needed from the Mac (lab copies, never committed; the ISO manifest lists them):** `CoreUI.framework/Resources/DesignLibrary-macOS.bundle` (system colours: without it every `Color.red` is clear), `SwiftUI.framework/Resources/*`, `AppKit.framework/Resources/Assets.car`.
+**Open (details in `SwiftUI/docs/EVIDENCE.md`, passes 55-92):**
+* `NSScrollView` / SwiftUI `ScrollView`: AppKit's scroll-pocket code traps (a Swift force-unwrap of the design token `MPPocketFadeMinimumPocketAlpha`); pearOS lays the scroll view out after the window is attached, the Mac does not (passes 89-92).
+* Text fields: focus starts the AutoFill remote view through ViewBridge services (`com.apple.ViewBridgeAuxiliary`, `com.apple.SafariPlatformSupport.Helper`) that do not exist; the failed handshake keeps the main thread busy (passes 79-83).  Plan: Apple's XPC services on demand under our launchd.
+* `Toggle` check mark (CAShapeLayer), titlebar backdrop layers, appearance from the system preferences (`AppleInterfaceStyle` is not read), the real source of a window's frame (the Mac's AppKit centring rule is emulated in `SkyLight/server/sls_carender.c`), scroll/drag events, Metal.
+**Test beds:** `SwiftUI/tests/hello` (Mac: `swiftc -parse-as-library -target x86_64-apple-macosx14.0`; options `-dark YES -focus YES -scroll YES -box YES -poke YES`), `SwiftUI/tests/hosting`, `SwiftUI/tests/appkit-hello` (`AKH_SCROLL=1`, `AKH_TOOLBAR=1`), clicks with `WindowServer/tools/wsclick` and `wskey` (`gmake wsclick wskey wswins`), event records with `SwiftUI/tools/evparse.py`, golden record test `WindowServer/test/test_evrec.c` (`gmake test_evrec`).
+**Lab notes:** the first program started after a stack restart does not come up: start it twice; `/tmp` of the lab is 20 MB (trace files fill it); the Mac VM's `/tmp` is cleared at reboot (tools are rebuilt from the repo).
