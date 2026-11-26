@@ -38,3 +38,13 @@ Our Dock must show the same set (the order of reading the keys and the per-tile 
 
 ## Order
 1. Capture the real Dock's trace with the interposer (golden). 2. Write the trace comparator. 3. New Dock skeleton on Cocoa: prefs through `CFPreferences`, the same tile model, the services answering minimally (tile size, magnification, orientation, hide, bounce). 4. Run it on the Mac VM in place of the real one, diff the traces, repeat. 5. The same source on pearOS (`open` AppKit + the stack of `d/`). 6. Look: pixel comparison against the real Dock on the same display.
+
+## Owner decision (2026-11-26): wire-identical Dock and services
+The Dock and every service it talks to are reimplemented to be identical **on the wire and in behaviour** with macOS 26.7.2: the same Mach / XPC messages byte for byte, the same SkyLight requests, the same CoreAnimation layer tree, the same files and preference keys. The code is ours (BSD-2-Clause, public); Apple's behaviour is learned by decompiling (REA) and by tracing on the Mac VM, and recorded as evidence. Not a function-by-function copy of Apple's machine code.
+Check in both directions, for each service: Apple's client against our server, and our client against Apple's server; the trace comparator (`research/dock-trace/compare.py`) must show equal sets.
+Order (one service at a time, each done before the next; the first run on pearOS showed IconServices blocking the start, see apps/dock-cocoa/README.md "On pearOS"):
+1. **IconServices**: `iconservicesagent` (per user, `com.apple.iconservices`) and `iconservicesd` (`com.apple.iconservices.store`), the store files, the client protocol of IconServices.framework. Repository `IconServices`.
+2. **LaunchServices**: `lsd` (`com.apple.lsd.mapdb`, `.modifydb`, ...) and `coreservices.launchservicesd`, replacing `d/.../lsd-stub`. Repository `LaunchServices`.
+3. **com.apple.dock.\***: what the Dock provides (`dock.server` = CoreDock API, `dock.spaces`, `dock.fullscreen`, `dock.notificationcenter`, ...), in `apps/dock-cocoa`.
+4. **usernoted.dock**: notification badges (push path).
+5. Then the rest of the lookups in `DOCK-SERVICES.md`, in the order the real Dock's startup trace needs them.
