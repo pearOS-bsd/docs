@@ -16,7 +16,7 @@ Between zones the programs talk through IPC (the window server socket, XPC), nev
 `iso/licenses/audit.sh ROOT` lists the libraries each shipped binary loads (ldd / otool -L; transitive ones count, a loaded GPL library is enough) and fails on GPL ones.  The table is `iso/licenses/libs.tsv`.
 
 ## Finding of the first run (the current GNUstep-path binaries on the test VM)
-`Dock-gnustep` and `TopBar-gnustep` load **FFmpeg (libavcodec/libavformat ...) with x264, x265, libdvdnav, libdvdread, libao, libjbig**: all GPL (or GPL when built that way).  They come in through the FreeBSD `gnustep-base` / `gnustep-gui` packages.  So the image as built today has GPL libraries loaded into processes that contain our code.
+`Dock-gnustep` (removed 2026-11-27: the Dock is `apps/dock-cocoa`, a Mach-O program) and `TopBar-gnustep` load **FFmpeg (libavcodec/libavformat ...) with x264, x265, libdvdnav, libdvdread, libao, libjbig**: all GPL (or GPL when built that way).  They come in through the FreeBSD `gnustep-base` / `gnustep-gui` packages.  So the image as built today has GPL libraries loaded into processes that contain our code.
 Fix: build GNUstep without FFmpeg / DVD support (a package flavour or our own build in `iso/ci/gnustep-setup.sh`), or retire the GNUstep path.  The audit makes the build fail until this is done.
 
 ## Per repository
