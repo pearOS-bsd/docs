@@ -13,6 +13,8 @@ uninstall.service, dmd.policy, backlightd, widget-observation, iohideventsystem,
 
 `tccd.system` / `tccd` are served by `d/darwin/tccd` (2026-11-27): the Dock's preflights (SLSInitialize asks kTCCServiceListenEvent) get the Mac's answers; the Dock's own entitlement `com.apple.private.tcc.allow` (PostEvent, ScreenCapture, AppleEvents, ...) is read from its code signature. Protocol: research/docs/TCC-WIRE.md.
 
+`system.opendirectoryd.libinfo` / `.membership` are served by `d/darwin/opendirectoryd` and `distributed_notifications@Uv3` / `@1v3` (+ `@0v3`) by `d/darwin/distnoted` (2026-11-27): getpwuid & co and mbr_* answer from /etc/passwd and /etc/group in Apple's reply shapes, distributed notifications are delivered as Apple's distnoted does (suspension, PostToAllSessions through the system instance). Protocol: research/docs/OPENDIRECTORY-DISTNOTED-WIRE.md.
+
 ## Mach services the Dock PROVIDES (other programs look these up)
 com.apple.dock.server (CoreDock API: tile size, magnification, orientation, hide, bounce, ...), dock.spaces, dock.fullscreen, dock.notificationcenter, dock.appstore, dock.spotlight,
 dock.sidecar, dock.ppt, dock.remotedesktoppicture, com.apple.dock (the Dock's own).  Entitlements: com.apple.private.dock.{ppt,spaces,spotlight}.
