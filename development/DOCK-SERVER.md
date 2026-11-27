@@ -14,7 +14,7 @@ Method: our Dock (`apps/dock-cocoa`) is started as a launchd job whose plist dec
 
 ## What is missing to do the minimize
 1. Decode the `alea` format (keys and value types; the window ids, the frame, the layer context / surface of the window image).
-2. Take the window out of the screen and animate it: SkyLight transactions (`SLSTransactionOrderWindow` out, alpha / shape), the genie effect (`apps/dock/genie.c` has the maths from the old Dock), a minimized-window tile (window image through a SkyLight capture, `SLSHWCaptureWindowList`: prototype unknown).
+2. Take the window out of the screen and animate it: SkyLight transactions (`SLSTransactionOrderWindow` out, alpha / shape), the genie effect (the maths of the old GNUstep Dock: `genie.c` in the history of the apps repository, before commit 39009b2), a minimized-window tile (window image through a SkyLight capture, `SLSHWCaptureWindowList`: prototype unknown).
 3. Restore on click (the reverse message).
 The values of 96521's reply are unverified beyond "the button turns coloured"; the real Dock's reply should be captured (dtrace on `mach_trap::mach_msg2_trap`, whose argument layout is not yet understood: the `syscall` provider sees none of these traps).
 

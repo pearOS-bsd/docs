@@ -27,7 +27,7 @@ Extra keys of a `directory-tile`: `arrangement` (2), `displayas` (0), `showas` (
 ## Keys the Dock binary reads (strings found at these addresses, `Dock` x86_64)
 `tilesize`, `largesize`, `magnification`, `magnify-immutable`, `orientation`, `autohide`, `autohide-delay`, `launchanim`, `show-recents`, `static-only`, `minimize-to-application`, `show-process-indicators` (and the Obj-C properties `tileSize`, `largeSize`, `autoHide`). The default values are **unknown**: the registration code is reached through `__cfstring` constants that Ghidra does not cross-reference; finding it needs the registerDefaults call traced dynamically (Frida on the Mac) or by hand in Ghidra.
 
-## Ours (`apps/dock/Dock.m`, `loadPrefs` / `savePrefs`)
+## The old GNUstep Dock (`apps/dock/Dock.m`, `loadPrefs` / `savePrefs`; removed 2026-11-27: the current code is `apps/dock-cocoa/DockPrefs.m`)
 | key | ours | note |
 |---|---|---|
 | `tilesize`, `largesize`, `magnification`, `orientation`, `autohide`, `autohide-delay`, `autohide-time-modifier` | read | our default tile size 58 / large 99 is a measurement of the real Dock on 1280x800, not the registered default |
