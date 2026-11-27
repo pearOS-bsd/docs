@@ -15,6 +15,8 @@ uninstall.service, dmd.policy, backlightd, widget-observation, iohideventsystem,
 
 `system.opendirectoryd.libinfo` / `.membership` are served by `d/darwin/opendirectoryd` and `distributed_notifications@Uv3` / `@1v3` (+ `@0v3`) by `d/darwin/distnoted` (2026-11-27): getpwuid & co and mbr_* answer from /etc/passwd and /etc/group in Apple's reply shapes, distributed notifications are delivered as Apple's distnoted does (suspension, PostToAllSessions through the system instance). Protocol: research/docs/OPENDIRECTORY-DISTNOTED-WIRE.md.
 
+`usernoted.dock`, `coreservices.appleevents`, `ProgressReporting`, `analyticsd`, `carboncore.csnameddata`, `dmd.policy`, `coreservices.lsbestappsuggestionmanager.xpc` and `uninstall.service` are served by `d/darwin/{usernoted,appleeventsd,filecoordinationd,analyticsd,csnameddatad,dmd,useractivityd,uninstalld}` (2026-11-27), wire compatible (Apple's clients get Apple's answers; checked on the Mac VM and on the FreeBSD lab VM). Two of them are synchronous at the Dock's start and must answer when the name exists (AE check-in, the Downloads stack's NSProgress subscription); the others are one-way or asynchronous, none blocks the bar when missing. Ranking and evidence: research/docs/DOCK-SERVICES-2.md.
+
 ## Mach services the Dock PROVIDES (other programs look these up)
 com.apple.dock.server (CoreDock API: tile size, magnification, orientation, hide, bounce, ...), dock.spaces, dock.fullscreen, dock.notificationcenter, dock.appstore, dock.spotlight,
 dock.sidecar, dock.ppt, dock.remotedesktoppicture, com.apple.dock (the Dock's own).  Entitlements: com.apple.private.dock.{ppt,spaces,spotlight}.
