@@ -7,7 +7,7 @@
 |---|---|---|
 | `dyld` (thin x86_64 slice of `/usr/lib/dyld`) | runs every Mach-O program (the kernel module `darwinator` hands the file to it) | step 2 |
 | dyld shared cache (`Preboot/Cryptexes/OS/System/Library/dyld/`) | all the libraries and frameworks of the Mach-O programs | step 3 (a cache is only an optimisation, step 5) |
-| `cfprefsd` | preferences (CFPreferences / NSUserDefaults of every Mach-O program; without it each read waits) | step 1 |
+| `cfprefsd` | preferences (CFPreferences / NSUserDefaults of every Mach-O program; without it each read waits) | step 1: done, `d/darwin/cfprefsd` (2026-11-28) |
 | `Fonts/` (SF, Helvetica, LastResort ...) and SF Symbols data | text and symbols of the Mac programs | step 4 |
 
 ## Steps, in order
@@ -18,6 +18,9 @@
 5. **A dyld shared cache of our own** (last; optimisation for start time and memory).  Either port Apple's `cache_builder` (needs xnu external headers, a replacement for `mach_vm.h`, hash functions) or write a minimal writer from `dyld_cache_format.h`.
 
 CoreAudio / AudioToolbox / AVFoundation (own implementations, wire-compatible `coreaudiod` in `d`) are part of step 3 and are planned in `CoreAudio/README.md`.
+
+## Step 1 done (2026-11-28)
+`d/darwin/cfprefsd` is our cfprefsd: both roles (`com.apple.cfprefsd.agent` per user, `com.apple.cfprefsd.daemon` for the system), the operations of Apple's (read/write, multi-message, observe, flush, path, user deleted, synchronize), the shared memory counters with Apple's slot formula, change notifications, deferred atomic writes of the Mac's plist files.  The protocol comes from decompiling CoreFoundation-5026.6.7.5 and recording the Mac's traffic (`research/docs/CFPREFSD-WIRE.md`).  Checked both ways on the Mac VM in Apple's test mode (Apple's CoreFoundation, Foundation and `defaults` against ours: the same messages, slots and files as against Apple's) and on the FreeBSD lab VM (the Mac's CoreFoundation from the dyld cache against ours, started on demand by our launchd).  The image now starts ours (`iso/overlay/etc-rc.d-wsbsd_macstack`); the Mac's copy on the cache disk is only a fallback.  Open: replacing Apple's agent inside a real macOS session (needs SIP off on the Mac VM), `PlistDiff`/`PlistFD`, cloud sources, the quarantine xattr on macOS.
 
 ## Done / not done (2026-11-20)
 * Done: the Mac side starts from the cache disk in the image (macdeps rc script), Control Center of ours runs on it.

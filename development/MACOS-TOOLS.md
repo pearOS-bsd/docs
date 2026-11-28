@@ -17,7 +17,7 @@ Order of work (dependencies): defaults (done) -> cfprefsd + plutil -> notifyd ->
 | Tool | Verdict | How, and what exists |
 |---|---|---|
 | `defaults` | DONE | `defaults/defaults.m`: read, read-type, write (all types), delete, rename, domains, find, import, export; output identical to macOS on `defaults/test/compare.sh`; installs as /usr/bin/defaults. Needs cfprefsd (change notifications) and the consumers of the keys (corner radius, sidebar) |
-| `cfprefsd` | NEXT | daemon that watches ~/Library/Preferences and posts the change notification `com.apple.cfprefsd.domainChanged` (defaults already posts it); apps and the AppKit layer refresh from it |
+| `cfprefsd` | DONE | `d/darwin/cfprefsd` (2026-11-28): wire compatible with macOS 26.7.2's (agent + daemon, shared memory counters, observers, the Mac's plist files); protocol in `research/docs/CFPREFSD-WIRE.md`. Change notifications to observers go over the cfprefsd connection (op 7), not `com.apple.cfprefsd.domainChanged` |
 | `plutil` | NEXT | -p, -convert xml1/binary1/json, -lint, -extract, -insert, -replace, -remove, -type; same plist code as defaults |
 | `open` | NEXT | over LaunchServices: -a app, -b bundle id, -e, -t, -R reveal, -n, --args, URLs; asks the Dock/Finder (`com.wsbsd.dock.reopen` exists) and the launchd of the session |
 | `pbcopy / pbpaste / pasteboard / pbtypes` | NEXT | a pasteboard daemon (NSPasteboard of GNUstep is per process): general, find, drag pasteboards; pbpaste -Prefer; the Finder and Terminal copy/paste go through it |

@@ -13,7 +13,7 @@ The disk side of the Mac (LaunchDaemons, /usr/libexec, CoreServices daemons) was
 Not available from the cache and replaced by stubs (`open/gen-stubs.py`): libswiftCoreImage, libswiftMetal, libswiftQuartzCore, libswiftSpatial, RecapPerformanceTesting (they pull the real AppKit in).
 
 ## 2. What runs from disk and not from the cache (daemons, apps, bundles): our side is `d` and `apps`
-Real binaries copied from the user's own Mac at build time: cfprefsd, coreservicesd, iconservicesd/agent, sharedfilelistd, Dock, Finder, ControlCenter.  Ours: launchd, notifyd, lsd-objc (LaunchServices), wsbridge, carender-stub (CARenderServer), hid-stub, wm-stub, svc-stub/xpc-stub (about 30 service names answered with the minimum), usernoted, airportd, the Open and Save Panel Service, WindowServer.
+Real binaries copied from the user's own Mac at build time: coreservicesd, iconservicesd/agent, sharedfilelistd, Dock, Finder, ControlCenter.  Ours: launchd, notifyd, cfprefsd (since 2026-11-28; the Mac's is only a fallback), lsd-objc (LaunchServices), wsbridge, carender-stub (CARenderServer), hid-stub, wm-stub, svc-stub/xpc-stub (about 30 service names answered with the minimum), usernoted, airportd, the Open and Save Panel Service, WindowServer.
 
 ## 3. Repositories that are still missing (proposal)
 | repository | what it would hold | why / evidence |
